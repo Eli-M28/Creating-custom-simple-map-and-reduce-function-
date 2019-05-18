@@ -1,0 +1,88 @@
+#include <stdio.h>
+#include <malloc.h>
+
+typedef int (*opt)(int,int);
+typedef int (*opt2)(int *, int);
+
+
+int *map(opt opt1,int *arr,int n,int *temp);
+int reduce(opt2 opt2,int *arr,int n);
+int add(int m,int n);
+int sub(int m,int n);
+int addall(int *arr,int n);
+
+
+int main() {
+    int n;//定义数组长度
+    printf("please enter arr[number]--number:");
+    scanf("%d",&n);
+    int a[n];
+    int *p=a;
+    printf("please enter arr[number]--arr[]:");
+    for(;p<a+n;p++){
+        scanf("%d",p);
+    }
+    p=a;
+    printf("The original arr[number] is:");
+    for(;p<a+n;p++){
+        printf("%3d",*p);
+    }
+    printf("\n");
+    printf("please enter 0-->map or 1-->reduce .");
+    int x;
+    scanf("%d",&x);
+    if(x==0){
+        int (*temp)(int,int);
+        printf("please enter 01-->add or 02-->sub");
+        int y;
+        scanf("%d",&y);
+        if(y==01){
+            printf("arr[number] is changed by using add from map.");
+            temp=add;
+        }
+        if(y==02){
+            printf("arr[number] is changed by using sub from map.");
+            temp=sub;
+        }
+        int *p0=(int *)malloc(sizeof(int)*n);
+        int *p2=map(temp,a,n,p0);
+        for(int i=0;i<n;i++,p2++){
+            printf("%3d",*p2);
+        }
+        printf("\n");
+        free(p0);
+    }
+    if(x==1){
+        printf("arr[number] is changed by using addall from reduce.");
+        printf("%3d",reduce(addall,a,n));
+        printf("\n");
+    }
+    return 0;
+}
+
+int *map(opt opt1,int *arr,int n,int *temp){
+    int *temp1=temp;
+    for(int *p=arr;p<arr+n;p++){
+        *temp1=opt1(*p,1);
+        *temp1++;
+    }
+    return temp;
+}
+
+int add(int m,int n){
+    return m+n;
+}
+
+int sub(int m,int n){
+    return m-n;
+}
+int reduce(opt2 opt2,int *arr,int n){
+    return opt2(arr,n);
+}
+
+int addall(int *arr,int n){
+    int all;
+    for(int *p=arr;p<arr+n;p++){
+        all+=*p;
+    }
+    return all;
